@@ -44,7 +44,7 @@ pub fn parse_number(chr: char, iter: &mut iter::Peekable<str::Chars>) -> Token {
 
     let number = match i32::from_str_radix(result_string.as_str(), 10) {
         Ok(int) => int,
-        Err(e) => abort("Error parsing int."),
+        Err(_) => abort("Error parsing int."),
     };
 
     Token::Number(number)
@@ -59,7 +59,7 @@ pub fn parse_char(chr: char, iter: &mut iter::Peekable<str::Chars>) -> Token {
 
     while peek_char {
         if let Some(c) = iter.peek() {
-            peek_char = !c.is_whitespace() && *c != ')';
+            peek_char = !c.is_whitespace() && *c != '(' && *c != ')';
             
             if peek_char {
                 result_string.push(*c);
@@ -76,15 +76,15 @@ pub fn parse_char(chr: char, iter: &mut iter::Peekable<str::Chars>) -> Token {
 }
 
 pub fn parse_equals(iter: &mut iter::Peekable<str::Chars>) -> Token {
-    let mut isAssign = true;
+    let mut is_assign = true;
 
     if let Some(c) = iter.peek() {
-        isAssign = *c != '=';
+        is_assign = *c != '=';
     }
     
-    if !isAssign { iter.next(); }
+    if !is_assign { iter.next(); }
 
-    if isAssign { Token::Operator(Op::Assign) }
+    if is_assign { Token::Operator(Op::Assign) }
     else { Token::Operator(Op::Equals) }
 }
 
