@@ -50,6 +50,11 @@ pub fn parse_number(chr: char, iter: &mut iter::Peekable<str::Chars>) -> Token {
     Token::Number(number)
 }
 
+fn is_identifier_end(c: &char) -> bool {
+    vec!['(', ')', ';'].iter().any(|x| x.eq(c))
+}
+
+
 pub fn parse_char(chr: char, iter: &mut iter::Peekable<str::Chars>) -> Token {
     let keywords = vec!["if", "else"];
     let mut peek_char = true;
@@ -59,7 +64,7 @@ pub fn parse_char(chr: char, iter: &mut iter::Peekable<str::Chars>) -> Token {
 
     while peek_char {
         if let Some(c) = iter.peek() {
-            peek_char = !c.is_whitespace() && *c != '(' && *c != ')';
+            peek_char = !c.is_whitespace() && !is_identifier_end(&c);
             
             if peek_char {
                 result_string.push(*c);
